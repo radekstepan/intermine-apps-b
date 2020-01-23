@@ -10,6 +10,13 @@ module.exports = (grunt) ->
                     main: 'src/widgets.coffee'
                     name: 'list-widgets'
 
+        stylus:
+            compile:
+                options:
+                    paths: [ 'src/app.styl' ]
+                files:
+                    'build/list-widgets.css': 'src/app.styl'
+
         concat:
             scripts:
                 src: [
@@ -29,7 +36,10 @@ module.exports = (grunt) ->
 
             # Vendor dependencies.
             styles:
-                src: [ 'vendor/bootstrap2/index.css' ]
+                src: [ 
+                    'vendor/bootstrap2/index.css' 
+                    'build/list-widgets.css'
+                ]
                 dest: 'build/app.bundle.css'
 
         rework:
@@ -71,6 +81,7 @@ module.exports = (grunt) ->
 
     grunt.registerTask('default', [
         'apps_c'
+        'stylus'
         'concat'
         'rework'
         'uglify'
@@ -79,5 +90,6 @@ module.exports = (grunt) ->
 
     grunt.registerTask('build', [
         'apps_c'
+        'stylus'
         'concat'
     ])
