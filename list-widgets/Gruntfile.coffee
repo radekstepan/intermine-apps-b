@@ -13,9 +13,9 @@ module.exports = (grunt) ->
         stylus:
             compile:
                 options:
-                    paths: [ 'src/app.styl' ]
+                    paths: [ 'src/app.stylus' ]
                 files:
-                    'build/list-widgets.css': 'src/app.styl'
+                    'build/list-widgets.css': 'src/app.stylus'
 
         concat:
             scripts:
@@ -78,6 +78,7 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks('grunt-rework')
     grunt.loadNpmTasks('grunt-contrib-uglify')
     grunt.loadNpmTasks('grunt-contrib-cssmin')
+    grunt.loadNpmTasks('grunt-contrib-stylus')
 
     grunt.registerTask('default', [
         'apps_c'
