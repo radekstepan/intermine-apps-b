@@ -19,7 +19,7 @@ module.exports = (grunt) ->
                     'vendor/backbone/backbone.js'
                     'vendor/google/index'
                     'vendor/imjs/js/im.js'
-                    'vendor/fileSaver/index.js'
+                    'vendor/fileSaver/FileSaver.js'
                     # Our app with requirerer.
                     'build/app.js'
                 ]
