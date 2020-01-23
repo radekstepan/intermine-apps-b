@@ -73,12 +73,21 @@ module.exports = (grunt) ->
                     'build/app.bundle.prefixed.min.css': 'build/app.bundle.prefixed.css'
                     'build/app.prefixed.min.css': 'build/app.prefixed.css'
 
+        watch:
+            files: './src/*'
+            tasks: [
+                'default'
+            ]
+            
+
+
     grunt.loadNpmTasks('grunt-apps-c')
     grunt.loadNpmTasks('grunt-contrib-concat')
     grunt.loadNpmTasks('grunt-rework')
     grunt.loadNpmTasks('grunt-contrib-uglify')
     grunt.loadNpmTasks('grunt-contrib-cssmin')
     grunt.loadNpmTasks('grunt-contrib-stylus')
+    grunt.loadNpmTasks('grunt-contrib-watch')
 
     grunt.registerTask('default', [
         'apps_c'
