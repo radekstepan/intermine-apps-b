@@ -74,7 +74,7 @@ module.exports = (grunt) ->
                     'build/app.prefixed.min.css': 'build/app.prefixed.css'
 
         watch:
-            files: './src/*'
+            files: './src/**/*'
             tasks: [
                 'default'
             ]
