@@ -1900,6 +1900,8 @@
       
         function EnrichmentView() {
           this.selectBackgroundList = __bind(this.selectBackgroundList, this);
+          this.initWrapper = __bind(this.initWrapper, this);
+          this.wrapperScrollEvent = __bind(this.wrapperScrollEvent, this);
           this.viewAction = __bind(this.viewAction, this);
           this.exportAction = __bind(this.exportAction, this);
           this.selectAllAction = __bind(this.selectAllAction, this);
@@ -1924,6 +1926,8 @@
             v = o[k];
             this[k] = v;
           }
+          _.bindAll(this, 'wrapperScrollEvent');
+          $('.content .wrapper').scroll(this.wrapperScrollEvent);
           this.collection = new Models.EnrichmentResults();
           this.collection.bind('change', this.renderToolbar);
           return this.render();
@@ -1984,7 +1988,8 @@
             'class': 'EnrichmentView',
             'event': 'rendered'
           });
-          return this;
+          this;
+          return this.initWrapper();
         };
       
         EnrichmentView.prototype.renderToolbar = function() {
@@ -2012,13 +2017,9 @@
           }
           this.renderTableBody(table);
           height = $(this.el).height() - $(this.el).find('div.header').height() - $(this.el).find('div.content table thead').height();
-          $(this.el).find("div.content div.wrapper").css('height', "" + height + "px");
-          $(this.el).find("div.content div.head").css("width", $(this.el).find("div.content table").width() + "px");
-          table.find('thead th').each(function(i, th) {
+          $(this.el).find("div.content table tbody").css('height', "" + height + "px");
+          return table.find('thead th').each(function(i, th) {
             return $(_this.el).find("div.content div.head div:eq(" + i + ")").width($(th).width());
-          });
-          return table.css({
-            'margin-top': '-' + table.find('thead').height() + 'px'
           });
         };
       
@@ -2126,6 +2127,38 @@
               "widget": this.widget
             })).el);
           }
+        };
+      
+        EnrichmentView.prototype.wrapperScrollEvent = function(event) {
+          var el, el_left, el_right, el_scroll_left, el_scroll_width, el_width;
+          el = event.currentTarget || event;
+          el_left = $(el).find('div.left')[0];
+          el_right = $(el).find('div.right')[0];
+          el_scroll_width = el.scrollWidth;
+          el_width = el.getBoundingClientRect().width;
+          el_scroll_left = el.scrollLeft;
+          if (el_scroll_left + el_width < el_scroll_width) {
+            el_right.style.opacity = '1';
+          } else {
+            el_right.style.opacity = '0';
+          }
+          if (el_scroll_left > 0) {
+            return el_left.style.opacity = '1';
+          } else {
+            return el_left.style.opacity = '0';
+          }
+        };
+      
+        EnrichmentView.prototype.initWrapper = function() {
+          var all_element, i, _results;
+          all_element = $('.content .wrapper');
+          i = 0;
+          _results = [];
+          while (i < all_element.length) {
+            this.wrapperScrollEvent(all_element[i]);
+            _results.push(i++);
+          }
+          return _results;
         };
       
         EnrichmentView.prototype.selectBackgroundList = function(list, save) {
@@ -2468,14 +2501,11 @@
             _fn(i);
           }
           this.renderTableBody(table);
-          height = $(this.el).height() - $(this.el).find('div.header').height() - $(this.el).find('div.content div.head').height();
-          $(this.el).find("div.content div.wrapper").css('height', "" + height + "px");
+          height = $(this.el).height() - $(this.el).find('div.header').height() - $(this.el).find('div.content div.head').height() - $(this.el).find('div.content table thead').height();
+          $(this.el).find("div.content table tbody").css('height', "" + height + "px");
           $(this.el).find("div.content div.head").css("width", $(this.el).find("div.content table").width() + "px");
-          table.find('thead th').each(function(i, th) {
+          return table.find('thead th').each(function(i, th) {
             return $(_this.el).find("div.content div.head div:eq(" + i + ")").width($(th).width());
-          });
-          return table.css({
-            'margin-top': '-' + table.find('thead').height() + 'px'
           });
         };
       
@@ -2626,6 +2656,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<a class="btn btn-small view">View</a>\n<a class="btn btn-small export">Download</a>');
           
           }).call(this);
@@ -2679,6 +2710,7 @@
         }
         (function() {
           (function() {
+          
             if (this.can.results) {
               __out.push('\n<a class="btn btn-small view-all">View in table</a>\n');
             }
@@ -2734,6 +2766,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<div class="header">\n    <h3>');
           
             if (this.title) {
@@ -2811,6 +2844,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<div class="group correction" style="display:inline-block;margin-right:10px;float:left;height:60px">\n    <label>Normalise by length <em class="badge badge-info" style="font-size:11px;font-family:serif;padding:1px 3px;border-radius:2px">i</em><div class="hjalp" style="padding:0"></div></label>\n\n    ');
           
             if (this.gene_length_correction) {
@@ -2880,6 +2914,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<div class="header">\n    <h3>');
           
             if (this.title) {
@@ -3044,6 +3079,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<div class="group background" style="display:inline-block;margin-right:10px;float:left;height:60px">\n    <label>Background population</label>\n    ');
           
             __out.push(__sanitize(this.current));
@@ -3113,7 +3149,7 @@
           
             __out.push('<table class="table table-striped">\n    <tbody>\n        <tr><td>\n            ');
           
-            if (this.current == null) {
+            if (!(this.current != null)) {
               __out.push('\n                <strong><a href="#">Default</a></strong>\n            ');
             } else {
               __out.push('\n                <a href="#">Default</a>\n            ');
@@ -3214,6 +3250,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<td class="check"><input type="checkbox" ');
           
             if (this.row["selected"]) {
@@ -3234,7 +3271,7 @@
               __out.push('</a>]\n    ');
             }
           
-            __out.push('\n</td>\n<td class="pValue" style="white-space:nowrap">');
+            __out.push('\n</td>\n<td class="pValue">');
           
             __out.push(__sanitize(this.row["p-value"]));
           
@@ -3242,7 +3279,7 @@
           
             __out.push(__sanitize(this.row["matches"]));
           
-            __out.push('</a>\n</td>');
+            __out.push('</a>\n</td>\n');
           
           }).call(this);
           
@@ -3295,15 +3332,12 @@
         }
         (function() {
           (function() {
-            __out.push('<!-- actual fixed head -->\n<div class="head" style="display:table">\n    <div style="font-weight:bold;display:table-cell;padding:0 8px;"><input type="checkbox" class="check" /></div>\n    <div style="font-weight:bold;display:table-cell;padding:0 8px;">');
+          
+            __out.push('\n<div class="wrapper" style="overflow:auto">\n    <div class="left"></div>\n    <table class="table table-striped header-fixed">\n        <!-- head for proper cell width -->\n        <thead>\n            <tr>\n                <th class="check-header"><input type="checkbox" class="check"/></th>\n                <th class="description">');
           
             __out.push(__sanitize(this.label));
           
-            __out.push('</div>\n    <div style="font-weight:bold;display:table-cell;padding:0 8px;white-space:nowrap">p-Value <a href="http://intermine.readthedocs.org/en/latest/embedding/list-widgets/enrichment-widgets/" target="_blank" class="badge badge-info" style="font-size:11px;font-family:serif;padding:1px 3px;border-radius:2px;font-style:italic;color:#FFF!important">i</a></div>\n    <div style="font-weight:bold;display:table-cell;padding:0 8px;">Matches</div>\n    <div style="clear:both"></div>\n</div>\n<div class="wrapper" style="overflow:auto;overflow-x:hidden">\n    <table class="table table-striped">\n        <!-- head for proper cell width -->\n        <thead style="visibility:hidden">\n            <tr>\n                <th></th>\n                <th>');
-          
-            __out.push(__sanitize(this.label));
-          
-            __out.push('</th>\n                <th>p-Value</th>\n                <th>Matches</th>\n            </tr>\n        </thead>\n        <tbody>\n            <!-- loop enrichment.row.eco -->\n        </tbody>\n    </table>\n</div>');
+            __out.push('</th>\n                <th class="pValue">p-Value</th>\n                <th class="matches">Matches</th>\n            </tr>\n        </thead>\n        <tbody>\n            <!-- loop enrichment.row.eco -->\n        </tbody>\n    </table>\n    <div class="right"></div>\n</div>');
           
           }).call(this);
           
@@ -3356,6 +3390,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<div class="alert alert-block">\n    <h4 class="alert-heading">');
           
             __out.push(__sanitize(this.title));
@@ -3506,6 +3541,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<li style="vertical-align:bottom">\n    <span style="display:inline-block" class="label label-important">');
           
             __out.push(__sanitize(this.key));
@@ -3571,6 +3607,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<div class="loading" style="background:rgba(255,255,255,0.9);position:absolute;top:0;left:0;height:100%;width:100%;text-align:center;">\n    <p style="padding-top:50%;font-weight:bold;">Loading &hellip;</p>\n</div>');
           
           }).call(this);
@@ -3624,6 +3661,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<div class="alert alert-info">\n    <p>');
           
             __out.push(__sanitize(this.text || 'The Widget has no results.'));
@@ -3681,13 +3719,14 @@
         }
         (function() {
           (function() {
+          
             __out.push('<div class="popover" style="position:absolute;top:5px;right:0;z-index:1;display:block">\n    <div class="popover-inner" style="');
           
             __out.push(__sanitize(this.style));
           
             __out.push('">\n        <a style="cursor:pointer;margin:2px 5px 0 0" class="close">×</a>\n        <h3 class="popover-title">\n            ');
           
-            __out.push(__sanitize(this.description.slice(0, +(this.descriptionLimit - 1) + 1 || 9e9)));
+            __out.push(__sanitize(this.description.slice(0, (this.descriptionLimit - 1) + 1 || 9e9)));
           
             __out.push('\n            ');
           
@@ -3760,6 +3799,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<div class="popover" style="position:absolute;top:5px;right:0;z-index:1;display: block;">\n    <div class="popover-inner">\n        <a style="cursor:pointer;margin:2px 5px 0 0" class="close">×</a>\n        <h3 class="popover-title">');
           
             __out.push(__sanitize(this.title));
@@ -3837,7 +3877,7 @@
           
             __out.push(':</h4>\n\n');
           
-            _ref = this.values.slice(0, +(this.valuesLimit - 1) + 1 || 9e9);
+            _ref = this.values.slice(0, (this.valuesLimit - 1) + 1 || 9e9);
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               object = _ref[_i];
               __out.push('\n    ');
@@ -3910,6 +3950,7 @@
         }
         (function() {
           (function() {
+          
             __out.push('<div class="header">\n    <h3>');
           
             if (this.title) {
@@ -4000,7 +4041,7 @@
             _ref = this.row["descriptions"];
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               column = _ref[_i];
-              __out.push('\n    <td>');
+              __out.push('\n    <td class="description">');
               __out.push(__sanitize(column));
               __out.push('</td>\n');
             }
@@ -4062,29 +4103,19 @@
         }
         (function() {
           (function() {
-            var column, _i, _j, _len, _len1, _ref, _ref1;
+            var column, _i, _len, _ref;
           
-            __out.push('<!-- actual fixed head -->\n<div class="head" style="display:table">\n    <div style="font-weight:bold;display:table-cell;padding:0 8px;"><input type="checkbox" class="check" /></div>\n    ');
+            __out.push('<div class="wrapper" style="overflow:auto">\n    <div class="left"></div>\n    <table class="table table-striped header-fixed">\n        <!-- head for proper cell width -->\n        <thead>\n            <tr>\n                <th class="check-header"><input type="checkbox" class="check"/></th>\n                ');
           
             _ref = this.columns;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               column = _ref[_i];
-              __out.push('\n        <div style="font-weight:bold;display:table-cell;padding:0 8px;">');
-              __out.push(__sanitize(column));
-              __out.push('</div>\n    ');
-            }
-          
-            __out.push('\n    <div style="clear:both"></div>\n</div>\n<div class="wrapper" style="overflow:auto;overflow-x:hidden">\n    <table class="table table-striped">\n        <!-- head for proper cell width -->\n        <thead style="visibility:hidden">\n            <tr>\n                <th></th>\n                ');
-          
-            _ref1 = this.columns;
-            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-              column = _ref1[_j];
-              __out.push('\n                    <th>');
+              __out.push('\n                    <th class="description">');
               __out.push(__sanitize(column));
               __out.push('</th>\n                ');
             }
           
-            __out.push('\n            </tr>\n        </thead>\n        <tbody>\n            <!-- loop table.row.eco -->\n        </tbody>\n    </table>\n</div>');
+            __out.push('\n            </tr>\n        </thead>\n        <tbody>\n            <!-- loop table.row.eco -->\n        </tbody>\n    </table>\n    <div class="right"></div>\n</div>');
           
           }).call(this);
           

@@ -22,6 +22,11 @@ class EnrichmentView extends Backbone.View
     initialize: (o) ->
         @[k] = v for k, v of o
 
+
+        # bind scroll event to wrapper
+        _.bindAll(this, 'wrapperScrollEvent');
+        $('.content .wrapper').scroll(this.wrapperScrollEvent);
+
         # New **Collection**.
         @collection = new Models.EnrichmentResults()
         @collection.bind('change', @renderToolbar) # Re-render toolbar on change.
@@ -90,6 +95,7 @@ class EnrichmentView extends Backbone.View
         @widget.fireEvent { 'class': 'EnrichmentView', 'event': 'rendered' }
 
         @
+        this.initWrapper()
 
     # Render the actions toolbar based on how many collection model rows are selected.
     renderToolbar: =>
@@ -119,19 +125,14 @@ class EnrichmentView extends Backbone.View
         # Render row **Views**.
         @renderTableBody table
 
-        # How tall should the table be? Whole height - header - faux header.
+        # How tall should the table be? Whole height - header.
         height = $(@el).height() - $(@el).find('div.header').height() - $(@el).find('div.content table thead').height()
-        $(@el).find("div.content div.wrapper").css 'height', "#{height}px"
+        $(@el).find("div.content table tbody").css 'height', "#{height}px"
 
-        # Determine the width of the faux head element.
-        $(@el).find("div.content div.head").css "width", $(@el).find("div.content table").width() + "px"
 
         # Fix the `div.head` elements width.
         table.find('thead th').each (i, th) =>
             $(@el).find("div.content div.head div:eq(#{i})").width $(th).width()
-
-        # Fix the `table` margin to hide gap after invisible `thead` element.
-        table.css 'margin-top': '-' + table.find('thead').height() + 'px'
 
     # Render `<tbody>` from a @collection (use to achieve single re-flow of row Views).
     renderTableBody: (table) =>
@@ -151,7 +152,6 @@ class EnrichmentView extends Backbone.View
 
         # Append the fragment to trigger the browser reflow.
         table.find('tbody').html fragment
-
     # On form select option change, set the new options and re-render.
     formAction: (e) =>
         @widget.formOptions[$(e.target).attr("name")] = $(e.target[e.target.selectedIndex]).attr("value")
@@ -228,6 +228,40 @@ class EnrichmentView extends Backbone.View
                 "response":    @response
                 "widget":      @widget
             )).el
+
+    #Scroll event 
+    wrapperScrollEvent: (event) =>
+        # extract the elment
+        el = event.currentTarget || event
+
+        # capture left div used for shadow effect
+        el_left = $(el).find('div.left')[0]
+
+        # capture right div used for shadow effect
+        el_right = $(el).find('div.right')[0]
+
+        # get the scroll width of the wrapper
+        el_scroll_width = el.scrollWidth
+
+        # get the width of wrapper (visible width)
+        el_width = el.getBoundingClientRect().width
+
+        # get the wrapper scroll amount
+        el_scroll_left = el.scrollLeft
+
+        if el_scroll_left + el_width < el_scroll_width then el_right.style.opacity = '1'
+        else el_right.style.opacity = '0'
+
+        if el_scroll_left > 0 then el_left.style.opacity = '1'
+        else el_left.style.opacity = '0'
+
+    initWrapper: =>
+        # capture all the target wrapper (wrapper containing the table)
+        all_element = $('.content .wrapper')
+        i = 0
+        while i < all_element.length
+            this.wrapperScrollEvent(all_element[i])
+            i++
 
     # Select background population list.
     selectBackgroundList: (list, save=false) =>

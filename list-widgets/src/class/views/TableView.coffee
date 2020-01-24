@@ -14,7 +14,6 @@ class TableView extends Backbone.View
 
     initialize: (o) ->
         @[k] = v for k, v of o
-
         # New **Collection**.
         @collection = new Models.TableResults()
         @collection.bind('change', @renderToolbar) # Re-render toolbar on change.
@@ -67,8 +66,8 @@ class TableView extends Backbone.View
         @renderTableBody table
 
         # How tall should the table be? Whole height - header - faux header.
-        height = $(@el).height() - $(@el).find('div.header').height() - $(@el).find('div.content div.head').height()
-        $(@el).find("div.content div.wrapper").css 'height', "#{height}px"
+        height = $(@el).height() - $(@el).find('div.header').height() - $(@el).find('div.content div.head').height() - $(@el).find('div.content table thead').height()
+        $(@el).find("div.content table tbody").css 'height', "#{height}px"
 
         # Determine the width of the faux head element.
         $(@el).find("div.content div.head").css "width", $(@el).find("div.content table").width() + "px"
@@ -77,8 +76,6 @@ class TableView extends Backbone.View
         table.find('thead th').each (i, th) =>
             $(@el).find("div.content div.head div:eq(#{i})").width $(th).width()
 
-        # Fix the `table` margin to hide gap after invisible `thead` element.
-        table.css 'margin-top': '-' + table.find('thead').height() + 'px'
 
     # Render `<tbody>` from a @collection (use to achieve single re-flow of row Views).
     renderTableBody: (table) =>

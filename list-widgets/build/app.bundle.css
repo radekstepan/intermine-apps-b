@@ -4981,3 +4981,16 @@ a.badge:hover {
 .invisible {
   visibility: hidden;
 }
+
+.content{position:relative;}
+.content .wrapper .right,.content .wrapper .left{opacity:0;position:absolute;height:100%;width:4px;box-shadow:0 0 25px #000;top:0;transition:.3s}
+.content .wrapper .right{right:-4px}
+.content .wrapper .left{left:-4px}
+.table.header-fixed{width:100%;}
+.table.header-fixed tr{display:flex;width:100%;flex-wrap:nowrap;}
+.table.header-fixed tr .description{flex:1;min-width:150px}
+.table.header-fixed tr .pValue{width:80px;min-width:75px;text-align:center;word-wrap:break-word;flex:0}
+.table.header-fixed tr .matches,.table.header-fixed tr th.description:last-child{width:65px;min-width:60px;text-align:center;word-wrap:break-word;flex:0}
+.table.header-fixed tr th,.table.header-fixed tr td{padding:8px 0}
+.table.header-fixed tbody{display:block;overflow:auto}
+.table .check-header,.table td.check{width:25px !important;text-align:center}
