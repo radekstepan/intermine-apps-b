@@ -18,6 +18,9 @@
 .table
     &.header-fixed 
         width 100%
+        table-layout fixed
+        margin-bottom 0 !important
+
         tr
             display flex
             width 100%
@@ -27,27 +30,18 @@
                 flex 1
                 min-width 150px
 
-            .pValue
+            .columns,  th.description:last-child, .pValue, .matches
                 width 80px
                 min-width 75px
                 text-align center
                 word-wrap break-word
                 flex 0
 
-            .matches, th.description:last-child
-                width 65px
-                min-width 60px
-                text-align center
-                word-wrap break-word
-                flex 0
-
-            th, td
-                padding 8px 0
-
-
         tbody
             display block
             overflow auto
+        thead
+            display block
 
     .check-header, td.check
         width 25px !important
