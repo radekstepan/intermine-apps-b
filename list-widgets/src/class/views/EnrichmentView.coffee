@@ -22,11 +22,6 @@ class EnrichmentView extends Backbone.View
     initialize: (o) ->
         @[k] = v for k, v of o
 
-
-        # bind scroll event to wrapper
-        _.bindAll(this, 'wrapperScrollEvent');
-        $('.content .wrapper').scroll(this.wrapperScrollEvent);
-
         # New **Collection**.
         @collection = new Models.EnrichmentResults()
         @collection.bind('change', @renderToolbar) # Re-render toolbar on change.
@@ -93,9 +88,11 @@ class EnrichmentView extends Backbone.View
                 'text': @response.message or 'No enrichment found.'
 
         @widget.fireEvent { 'class': 'EnrichmentView', 'event': 'rendered' }
+        
+        # initialise the shadow effect if there is overflow
+        @initWrapperScrollEffect()
 
         @
-        this.initWrapper()
 
     # Render the actions toolbar based on how many collection model rows are selected.
     renderToolbar: =>
@@ -129,6 +126,10 @@ class EnrichmentView extends Backbone.View
         height = $(@el).height() - $(@el).find('div.header').height() - $(@el).find('div.content table thead').height()
         $(@el).find("div.content table tbody").css 'height', "#{height}px"
 
+        # Width of the table
+        width = @el.find('div.content table tbody').prop('scrollWidth')
+        $(@el).find("div.content table tbody").css 'width', "#{width}px"
+        $(@el).find("div.content table thead").css 'width', "#{width}px"
 
         # Fix the `div.head` elements width.
         table.find('thead th').each (i, th) =>
@@ -230,9 +231,9 @@ class EnrichmentView extends Backbone.View
             )).el
 
     #Scroll event 
-    wrapperScrollEvent: (event) =>
-        # extract the elment
-        el = event.currentTarget || event
+    wrapperScrollEvent: (target) =>
+        # get the target element
+        el = target && target.currentTarget || target
 
         # capture left div used for shadow effect
         el_left = $(el).find('div.left')[0]
@@ -255,13 +256,17 @@ class EnrichmentView extends Backbone.View
         if el_scroll_left > 0 then el_left.style.opacity = '1'
         else el_left.style.opacity = '0'
 
-    initWrapper: =>
-        # capture all the target wrapper (wrapper containing the table)
-        all_element = $('.content .wrapper')
-        i = 0
-        while i < all_element.length
-            this.wrapperScrollEvent(all_element[i])
-            i++
+    initWrapperScrollEffect: =>
+        # get the current wrapper div
+        target = $(@el).get(0)
+        target = $(target).find('.content .wrapper').get(0)
+
+        # add scroll event listner to the wrapper
+        $(target).scroll(@wrapperScrollEvent) if target?
+
+        # set the scroll effect
+        @wrapperScrollEvent(target) if target?
+        
 
     # Select background population list.
     selectBackgroundList: (list, save=false) =>
