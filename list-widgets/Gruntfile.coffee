@@ -74,10 +74,19 @@ module.exports = (grunt) ->
                     'build/app.prefixed.min.css': 'build/app.prefixed.css'
 
         watch:
-            files: './src/**/*'
-            tasks: [
-                'default'
-            ]
+            scripts: 
+                files: 'src/**/*.{coffee,js,eco}' 
+                tasks: [
+                    'apps_c'
+                    'concat:scripts'
+                ]
+            
+            style: 
+                files: 'src/**/*.{css,stylus,styl}'
+                tasks: [
+                    'stylus'
+                    'concat:styles'
+                ]
             
 
 
