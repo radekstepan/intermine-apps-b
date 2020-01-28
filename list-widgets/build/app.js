@@ -1900,7 +1900,7 @@
       
         function EnrichmentView() {
           this.selectBackgroundList = __bind(this.selectBackgroundList, this);
-          this.initWrapper = __bind(this.initWrapper, this);
+          this.initWrapperScrollEffect = __bind(this.initWrapperScrollEffect, this);
           this.wrapperScrollEvent = __bind(this.wrapperScrollEvent, this);
           this.viewAction = __bind(this.viewAction, this);
           this.exportAction = __bind(this.exportAction, this);
@@ -1926,8 +1926,6 @@
             v = o[k];
             this[k] = v;
           }
-          _.bindAll(this, 'wrapperScrollEvent');
-          $('.content .wrapper').scroll(this.wrapperScrollEvent);
           this.collection = new Models.EnrichmentResults();
           this.collection.bind('change', this.renderToolbar);
           return this.render();
@@ -1988,8 +1986,8 @@
             'class': 'EnrichmentView',
             'event': 'rendered'
           });
-          this;
-          return this.initWrapper();
+          this.initWrapperScrollEffect();
+          return this;
         };
       
         EnrichmentView.prototype.renderToolbar = function() {
@@ -1997,7 +1995,7 @@
         };
       
         EnrichmentView.prototype.renderTable = function() {
-          var height, i, table, _fn, _i, _ref2,
+          var height, i, table, width, _fn, _i, _ref2,
             _this = this;
           $(this.el).find("div.content").html(require('../../templates/enrichment/enrichment.table')({
             "label": this.response.label
@@ -2018,6 +2016,9 @@
           this.renderTableBody(table);
           height = $(this.el).height() - $(this.el).find('div.header').height() - $(this.el).find('div.content table thead').height();
           $(this.el).find("div.content table tbody").css('height', "" + height + "px");
+          width = this.el.find('div.content table tbody').prop('scrollWidth');
+          $(this.el).find("div.content table tbody").css('width', "" + width + "px");
+          $(this.el).find("div.content table thead").css('width', "" + width + "px");
           return table.find('thead th').each(function(i, th) {
             return $(_this.el).find("div.content div.head div:eq(" + i + ")").width($(th).width());
           });
@@ -2129,9 +2130,9 @@
           }
         };
       
-        EnrichmentView.prototype.wrapperScrollEvent = function(event) {
+        EnrichmentView.prototype.wrapperScrollEvent = function(target) {
           var el, el_left, el_right, el_scroll_left, el_scroll_width, el_width;
-          el = event.currentTarget || event;
+          el = target && target.currentTarget || target;
           el_left = $(el).find('div.left')[0];
           el_right = $(el).find('div.right')[0];
           el_scroll_width = el.scrollWidth;
@@ -2149,16 +2150,16 @@
           }
         };
       
-        EnrichmentView.prototype.initWrapper = function() {
-          var all_element, i, _results;
-          all_element = $('.content .wrapper');
-          i = 0;
-          _results = [];
-          while (i < all_element.length) {
-            this.wrapperScrollEvent(all_element[i]);
-            _results.push(i++);
+        EnrichmentView.prototype.initWrapperScrollEffect = function() {
+          var target;
+          target = $(this.el).get(0);
+          target = $(target).find('.content .wrapper').get(0);
+          if (target != null) {
+            $(target).scroll(this.wrapperScrollEvent);
           }
-          return _results;
+          if (target != null) {
+            return this.wrapperScrollEvent(target);
+          }
         };
       
         EnrichmentView.prototype.selectBackgroundList = function(list, save) {
@@ -2432,6 +2433,8 @@
         __extends(TableView, _super);
       
         function TableView() {
+          this.initWrapperScrollEffect = __bind(this.initWrapperScrollEffect, this);
+          this.wrapperScrollEvent = __bind(this.wrapperScrollEvent, this);
           this.viewAction = __bind(this.viewAction, this);
           this.exportAction = __bind(this.exportAction, this);
           this.selectAllAction = __bind(this.selectAllAction, this);
@@ -2478,6 +2481,7 @@
             'class': 'TableView',
             'event': 'rendered'
           });
+          this.initWrapperScrollEffect();
           return this;
         };
       
@@ -2486,7 +2490,7 @@
         };
       
         TableView.prototype.renderTable = function() {
-          var height, i, table, _fn, _i, _ref2,
+          var height, i, table, width, _fn, _i, _ref2,
             _this = this;
           $(this.el).find("div.content").html(require('../../templates/table/table.table')({
             "columns": this.response.columns.split(',')
@@ -2503,6 +2507,8 @@
           this.renderTableBody(table);
           height = $(this.el).height() - $(this.el).find('div.header').height() - $(this.el).find('div.content div.head').height() - $(this.el).find('div.content table thead').height();
           $(this.el).find("div.content table tbody").css('height', "" + height + "px");
+          width = this.el.find('div.content table tbody').prop('scrollWidth');
+          $(this.el).find("div.content table tbody").css('width', "" + width + "px");
           $(this.el).find("div.content div.head").css("width", $(this.el).find("div.content table").width() + "px");
           return table.find('thead th').each(function(i, th) {
             return $(_this.el).find("div.content div.head div:eq(" + i + ")").width($(th).width());
@@ -2583,6 +2589,38 @@
               "type": this.response.type,
               "style": 'width:300px'
             })).el);
+          }
+        };
+      
+        TableView.prototype.wrapperScrollEvent = function(target) {
+          var el, el_left, el_right, el_scroll_left, el_scroll_width, el_width;
+          el = target && target.currentTarget || target;
+          el_left = $(el).find('div.left')[0];
+          el_right = $(el).find('div.right')[0];
+          el_scroll_width = el.scrollWidth;
+          el_width = el.getBoundingClientRect().width;
+          el_scroll_left = el.scrollLeft;
+          if (el_scroll_left + el_width < el_scroll_width) {
+            el_right.style.opacity = '1';
+          } else {
+            el_right.style.opacity = '0';
+          }
+          if (el_scroll_left > 0) {
+            return el_left.style.opacity = '1';
+          } else {
+            return el_left.style.opacity = '0';
+          }
+        };
+      
+        TableView.prototype.initWrapperScrollEffect = function() {
+          var target;
+          target = $(this.el).get(0);
+          target = $(target).find('.content .wrapper').get(0);
+          if (target != null) {
+            $(target).scroll(this.wrapperScrollEvent);
+          }
+          if (target != null) {
+            return this.wrapperScrollEvent(target);
           }
         };
       
@@ -3271,11 +3309,11 @@
               __out.push('</a>]\n    ');
             }
           
-            __out.push('\n</td>\n<td class="pValue">');
+            __out.push('\n</td>\n<td class="pValue columns">');
           
             __out.push(__sanitize(this.row["p-value"]));
           
-            __out.push('</td>\n<td class="matches">\n    <a class="count" style="cursor:pointer">');
+            __out.push('</td>\n<td class="matches columns">\n    <a class="count" style="cursor:pointer">');
           
             __out.push(__sanitize(this.row["matches"]));
           
@@ -3337,7 +3375,7 @@
           
             __out.push(__sanitize(this.label));
           
-            __out.push('</th>\n                <th class="pValue">p-Value</th>\n                <th class="matches">Matches</th>\n            </tr>\n        </thead>\n        <tbody>\n            <!-- loop enrichment.row.eco -->\n        </tbody>\n    </table>\n    <div class="right"></div>\n</div>');
+            __out.push('</th>\n                <th class="columns">p-Value</th>\n                <th class="columns">Matches</th>\n            </tr>\n        </thead>\n        <tbody>\n            <!-- loop enrichment.row.eco -->\n        </tbody>\n    </table>\n    <div class="right"></div>\n</div>');
           
           }).call(this);
           
@@ -4046,7 +4084,7 @@
               __out.push('</td>\n');
             }
           
-            __out.push('\n<td class="matches">\n    <a class="count" style="cursor:pointer">');
+            __out.push('\n<td class="columns">\n    <a class="count" style="cursor:pointer">');
           
             __out.push(__sanitize(this.row["matches"]));
           

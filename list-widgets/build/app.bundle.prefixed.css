@@ -5005,6 +5005,7 @@
 
 .-im-listwidgets .table.header-fixed {
   width: 100%;
+  table-layout: fixed;
 }
 
 .-im-listwidgets .table.header-fixed tr {
@@ -5018,7 +5019,8 @@
   min-width: 150px;
 }
 
-.-im-listwidgets .table.header-fixed tr .pValue {
+.-im-listwidgets .table.header-fixed tr .columns,
+.-im-listwidgets .table.header-fixed tr th.description:last-child {
   width: 80px;
   min-width: 75px;
   text-align: center;
@@ -5026,23 +5028,13 @@
   flex: 0;
 }
 
-.-im-listwidgets .table.header-fixed tr .matches,
-.-im-listwidgets .table.header-fixed tr th.description:last-child {
-  width: 65px;
-  min-width: 60px;
-  text-align: center;
-  word-wrap: break-word;
-  flex: 0;
-}
-
-.-im-listwidgets .table.header-fixed tr th,
-.-im-listwidgets .table.header-fixed tr td {
-  padding: 8px 0;
-}
-
 .-im-listwidgets .table.header-fixed tbody {
   display: block;
   overflow: auto;
+}
+
+.-im-listwidgets .table.header-fixed thead {
+  display: block;
 }
 
 .-im-listwidgets .table .check-header,
