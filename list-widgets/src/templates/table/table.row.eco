@@ -2,6 +2,6 @@
 <% for column in @row["descriptions"]: %>
     <td class="description"><%= column %></td>
 <% end %>
-<td class="matches">
+<td class="columns">
     <a class="count" style="cursor:pointer"><%= @row["matches"] %></a>
 </td>

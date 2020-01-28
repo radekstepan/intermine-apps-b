@@ -7,8 +7,8 @@
             <tr>
                 <th class="check-header"><input type="checkbox" class="check"/></th>
                 <th class="description"><%= @label %></th>
-                <th class="pValue">p-Value</th>
-                <th class="matches">Matches</th>
+                <th class="columns">p-Value</th>
+                <th class="columns">Matches</th>
             </tr>
         </thead>
         <tbody>
