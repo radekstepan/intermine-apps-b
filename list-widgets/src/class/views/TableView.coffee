@@ -40,6 +40,9 @@ class TableView extends Backbone.View
 
         @widget.fireEvent { 'class': 'TableView', 'event': 'rendered' }
 
+        # initialise the shadow effect if there is overflow
+        @initWrapperScrollEffect()
+
         @
 
     # Render the actions toolbar based on how many collection model rows are selected.
@@ -68,6 +71,11 @@ class TableView extends Backbone.View
         # How tall should the table be? Whole height - header - faux header.
         height = $(@el).height() - $(@el).find('div.header').height() - $(@el).find('div.content div.head').height() - $(@el).find('div.content table thead').height()
         $(@el).find("div.content table tbody").css 'height', "#{height}px"
+
+        # Width of the table
+        width = @el.find('div.content table tbody').prop('scrollWidth')
+        $(@el).find("div.content table tbody").css 'width', "#{width}px"
+        
 
         # Determine the width of the faux head element.
         $(@el).find("div.content div.head").css "width", $(@el).find("div.content table").width() + "px"
@@ -149,5 +157,42 @@ class TableView extends Backbone.View
                 "type":           @response.type
                 "style":          'width:300px'
             )).el
+
+    #Scroll event 
+    wrapperScrollEvent: (target) =>
+        # get the target element
+        el = target && target.currentTarget || target
+
+        # capture left div used for shadow effect
+        el_left = $(el).find('div.left')[0]
+
+        # capture right div used for shadow effect
+        el_right = $(el).find('div.right')[0]
+
+        # get the scroll width of the wrapper
+        el_scroll_width = el.scrollWidth
+
+        # get the width of wrapper (visible width)
+        el_width = el.getBoundingClientRect().width
+
+        # get the wrapper scroll amount
+        el_scroll_left = el.scrollLeft
+
+        if el_scroll_left + el_width < el_scroll_width  then el_right.style.opacity = '1' 
+        else el_right.style.opacity = '0'
+
+        if el_scroll_left > 0 then el_left.style.opacity = '1'
+        else el_left.style.opacity = '0'
+
+    initWrapperScrollEffect: =>
+        # get the current wrapper div
+        target = $(@el).get(0)
+        target = $(target).find('.content .wrapper').get(0)
+
+        # add scroll event listner to the wrapper
+        $(target).scroll(@wrapperScrollEvent) if target?
+
+        # set the scroll effect
+        @wrapperScrollEvent(target) if target?
 
 module.exports = TableView
