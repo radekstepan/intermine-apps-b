@@ -1,0 +1,49 @@
+.content
+    position relative
+    .wrapper
+        .right, .left
+            opacity 0
+            position absolute
+            height 100%
+            width 4px
+            box-shadow 0 0 25px #000
+            top 0
+            transition 0.3s
+
+        .right
+            right -4px
+        .left
+            left -4px
+        
+.table
+    &.header-fixed 
+        width 100%
+        table-layout fixed
+        margin-bottom 0 !important
+
+        tr
+            display flex
+            width 100%
+            flex-wrap nowrap
+
+            .description
+                flex 1
+                min-width 150px
+
+            .columns,  th.description:last-child, .pValue, .matches
+                width 80px
+                min-width 75px
+                text-align center
+                word-wrap break-word
+                flex 0
+
+        tbody
+            display block
+            overflow auto
+        thead
+            display block
+
+    .check-header, td.check
+        width 25px !important
+        text-align center
+        

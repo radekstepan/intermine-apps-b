@@ -1,19 +1,12 @@
-<!-- actual fixed head -->
-<div class="head" style="display:table">
-    <div style="font-weight:bold;display:table-cell;padding:0 8px;"><input type="checkbox" class="check" /></div>
-    <% for column in @columns: %>
-        <div style="font-weight:bold;display:table-cell;padding:0 8px;"><%= column %></div>
-    <% end %>
-    <div style="clear:both"></div>
-</div>
-<div class="wrapper" style="overflow:auto;overflow-x:hidden">
-    <table class="table table-striped">
+<div class="wrapper" style="overflow:auto">
+    <div class="left"></div>
+    <table class="table table-striped header-fixed">
         <!-- head for proper cell width -->
-        <thead style="visibility:hidden">
+        <thead>
             <tr>
-                <th></th>
+                <th class="check-header"><input type="checkbox" class="check"/></th>
                 <% for column in @columns: %>
-                    <th><%= column %></th>
+                    <th class="description"><%= column %></th>
                 <% end %>
             </tr>
         </thead>
@@ -21,4 +14,5 @@
             <!-- loop table.row.eco -->
         </tbody>
     </table>
+    <div class="right"></div>
 </div>
